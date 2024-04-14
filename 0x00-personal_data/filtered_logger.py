@@ -59,14 +59,31 @@ def get_logger() -> logging.Logger:
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """ get_db """
-    host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
-    user = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
-    password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
-    database = os.getenv("PERSONAL_DATA_DB_NAME", "")
-    connection = mysql.connector.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database
+    return mysql.connector.connect(
+        host=os.getenv("PERSONAL_DATA_DB_HOST", "localhost"),
+        user=os.getenv("PERSONAL_DATA_DB_USERNAME", "root"),
+        password=os.getenv("PERSONAL_DATA_DB_PASSWORD", ""),
+        database=os.getenv("PERSONAL_DATA_DB_NAME")
     )
-    return connection
+
+
+def main() -> None:
+    """ main """
+    my_db = get_db()
+    my_cursor = my_db.cursor()
+
+    my_cursor.execute("SELECT * FROM users")
+    records = my_cursor.fetchall()
+
+    logger = get_logger()
+
+    for record in records:
+        name, email, phone, ssn, password, ip, last_login, user_agent = record
+        logger.info(
+            f"name={name};email={email};phone={phone};" +
+            f"ssn={ssn};password={password};ip={ip};" +
+            f"last_login={last_login};user_agent={user_agent};")
+
+
+if __name__ == "__main__":
+    main()
