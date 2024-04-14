@@ -35,13 +35,13 @@ class RedactingFormatter(logging.Formatter):
             self.fields, self.REDACTION, message, self.SEPARATOR)
 
 
-PII_FIELDS = [
+PII_FIELDS = (
     "name",
     "email",
     "phone",
     "ssn",
     "password",
-]
+)
 
 
 def get_logger() -> logging.Logger:
@@ -50,6 +50,6 @@ def get_logger() -> logging.Logger:
     logger.setLevel(logging.INFO)
     logger.propagate = False
     handler = logging.StreamHandler()
-    handler.setFormatter(RedactingFormatter(fields=PII_FIELDS))
+    handler.setFormatter(RedactingFormatter(PII_FIELDS))
     logger.addHandler(handler)
     return logger
