@@ -5,6 +5,8 @@ filtered_logger.py
 from typing import List
 import re
 import logging
+import mysql.connector
+import os
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
@@ -53,3 +55,13 @@ def get_logger() -> logging.Logger:
     handler.setFormatter(RedactingFormatter(PII_FIELDS))
     logger.addHandler(handler)
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """ get_db """
+    return mysql.connector.connect(
+        host=os.environ.get("PERSONAL_DATA_DB_HOST", "localhost"),
+        user=os.environ.get("PERSONAL_DATA_DB_USERNAME", "root"),
+        password=os.environ.get("PERSONAL_DATA_DB_PASSWORD", ""),
+        database=os.environ.get("PERSONAL_DATA_DB_NAME")
+    )
