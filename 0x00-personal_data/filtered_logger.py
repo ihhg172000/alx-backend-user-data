@@ -2,10 +2,11 @@
 """
 filtered_logger.py
 """
-from typing import List, Any
+from typing import List
 import re
 import logging
 import mysql.connector
+from mysql.connector.connection import MySQLConnection
 import os
 
 
@@ -62,7 +63,7 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db() -> Any:
+def get_db() -> MySQLConnection:
     """ get_db """
     config = {
         "host": os.getenv("PERSONAL_DATA_DB_HOST", "localhost"),
@@ -97,6 +98,9 @@ def main() -> None:
             f"last_login={last_login};" +
             f"user_agent={user_agent};"
         )
+
+    my_cursor.close()
+    my_db.close()
 
 
 if __name__ == "__main__":
