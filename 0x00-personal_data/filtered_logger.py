@@ -2,7 +2,7 @@
 """
 filtered_logger.py
 """
-from typing import List
+from typing import List, Any
 import re
 import logging
 import mysql.connector
@@ -28,11 +28,13 @@ class RedactingFormatter(logging.Formatter):
     def __init__(self, fields: List[str]):
         """ __init__ """
         super(RedactingFormatter, self).__init__(self.FORMAT)
+
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
         """ format """
         message = super(RedactingFormatter, self).format(record)
+
         return filter_datum(
             self.fields, self.REDACTION, message, self.SEPARATOR)
 
@@ -51,20 +53,25 @@ def get_logger() -> logging.Logger:
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
     logger.propagate = False
+
     handler = logging.StreamHandler()
-    handler.setFormatter(RedactingFormatter(PII_FIELDS))
+    handler.setFormatter(RedactingFormatter(list(PII_FIELDS)))
+
     logger.addHandler(handler)
+
     return logger
 
 
-def get_db() -> mysql.connector.connection.MySQLConnection:
+def get_db() -> Any:
     """ get_db """
-    return mysql.connector.connect(
-        host=os.getenv("PERSONAL_DATA_DB_HOST", "localhost"),
-        user=os.getenv("PERSONAL_DATA_DB_USERNAME", "root"),
-        password=os.getenv("PERSONAL_DATA_DB_PASSWORD", ""),
-        database=os.getenv("PERSONAL_DATA_DB_NAME")
-    )
+    config = {
+        "host": os.getenv("PERSONAL_DATA_DB_HOST", "localhost"),
+        "user": os.getenv("PERSONAL_DATA_DB_USERNAME", "root"),
+        "password": os.getenv("PERSONAL_DATA_DB_PASSWORD", ""),
+        "database": os.getenv("PERSONAL_DATA_DB_NAME")
+    }
+
+    return mysql.connector.connect(**config)
 
 
 def main() -> None:
@@ -79,10 +86,17 @@ def main() -> None:
 
     for record in records:
         name, email, phone, ssn, password, ip, last_login, user_agent = record
+
         logger.info(
-            f"name={name};email={email};phone={phone};" +
-            f"ssn={ssn};password={password};ip={ip};" +
-            f"last_login={last_login};user_agent={user_agent};")
+            f"name={name};" +
+            f"email={email};" +
+            f"phone={phone};" +
+            f"ssn={ssn};" +
+            f"password={password};" +
+            f"ip={ip};" +
+            f"last_login={last_login};" +
+            f"user_agent={user_agent};"
+        )
 
 
 if __name__ == "__main__":
