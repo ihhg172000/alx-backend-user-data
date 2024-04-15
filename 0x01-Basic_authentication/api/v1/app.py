@@ -25,6 +25,8 @@ if AUTH_TYPE == "auth":
 
 @app.before_request
 def before_request():
+    """ before_request
+    """
     if auth:
         execlude_paths = [
             '/api/v1/status/',
