@@ -41,6 +41,7 @@ def before_request():
             if not auth.current_user(request):
                 abort(403)
 
+
 @app.errorhandler(401)
 def unauthorized(error) -> str:
     """ Unauthorized handler
