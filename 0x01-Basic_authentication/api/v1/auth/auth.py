@@ -28,7 +28,7 @@ class Auth:
         """
         if request:
             return request.headers.get("Authorization")
-        
+
         return None
 
     def current_user(self, request=None) -> TypeVar('User'):
