@@ -15,7 +15,7 @@ class BasicAuth(Auth):
         """
         extract_base64_authorization_header
         """
-        if not authorization_header or type(authorization_header) is not str:
+        if type(authorization_header) is not str:
             return None
 
         if not authorization_header.startswith("Basic "):
@@ -28,8 +28,7 @@ class BasicAuth(Auth):
         """
         decode_base64_authorization_header
         """
-        if (not base64_authorization_header or
-                type(base64_authorization_header) is not str):
+        if type(base64_authorization_header) is not str:
             return None
 
         try:
