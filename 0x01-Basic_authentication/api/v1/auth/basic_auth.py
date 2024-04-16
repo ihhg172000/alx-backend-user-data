@@ -34,3 +34,18 @@ class BasicAuth(Auth):
                     base64_authorization_header).decode("utf-8")
             except (Exception):
                 pass
+
+    def extract_user_credentials(
+            self, decoded_base64_authorization_header: str) -> (str, str):
+        """
+        extract_user_credentials
+        """
+
+        if type(decoded_base64_authorization_header) is str:
+            pattren = r"^([^\s]+):([^\s]+)$"
+            match = re.search(pattren, decoded_base64_authorization_header)
+
+            if match:
+                return match.group(1), match.group(2)
+
+        return None, None
