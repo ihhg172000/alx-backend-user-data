@@ -45,7 +45,7 @@ class BasicAuth(Auth):
         """
 
         if type(decoded_base64_authorization_header) is str:
-            pattren = r"^([^\s]+):([^\s]+)$"
+            pattren = r"^([^\s:]+):([^\s]+)$"
             match = re.search(pattren, decoded_base64_authorization_header)
 
             if match:
