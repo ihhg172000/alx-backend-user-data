@@ -17,7 +17,14 @@ class SessionAuth(Auth):
         create_session
         """
         if type(user_id) is str:
-            session_id = uuid4()
+            session_id = str(uuid4())
             SessionAuth.user_id_by_session_id[session_id] = user_id
 
             return session_id
+
+    def user_id_for_session_id(self, session_id: str = None) -> str:
+        """
+        user_id_for_session_id
+        """
+        if type(session_id) is str:
+            return SessionAuth.user_id_by_session_id.get(session_id)
