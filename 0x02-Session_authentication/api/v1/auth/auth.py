@@ -5,6 +5,8 @@ auth.py
 from flask import request
 from typing import List, TypeVar
 
+from flask.app import os
+
 
 class Auth:
     """
@@ -39,3 +41,12 @@ class Auth:
         current_user
         """
         pass
+
+    def session_cookie(self, request=None):
+        """
+        session_cookie
+        """
+        if request:
+            SESSION_NAME = os.getenv("SESSION_NAME")
+
+            return request.cookies.get(SESSION_NAME)
