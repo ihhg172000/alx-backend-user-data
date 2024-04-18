@@ -9,6 +9,9 @@ import os
 
 
 class SessionExpAuth(SessionAuth):
+    """
+    SessionExpAuth
+    """
     user_id_by_session_id = {}
 
     def __init__(self) -> None:
