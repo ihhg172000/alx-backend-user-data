@@ -28,12 +28,12 @@ class Base():
             self.created_at = datetime.strptime(kwargs.get('created_at'),
                                                 TIMESTAMP_FORMAT)
         else:
-            self.created_at = datetime.now()
+            self.created_at = datetime.utcnow()
         if kwargs.get('updated_at') is not None:
             self.updated_at = datetime.strptime(kwargs.get('updated_at'),
                                                 TIMESTAMP_FORMAT)
         else:
-            self.updated_at = datetime.now()
+            self.updated_at = datetime.utcnow()
 
     def __eq__(self, other: TypeVar('Base')) -> bool:
         """ Equality
@@ -89,7 +89,7 @@ class Base():
         """ Save current object
         """
         s_class = self.__class__.__name__
-        self.updated_at = datetime.now()
+        self.updated_at = datetime.utcnow()
         DATA[s_class][self.id] = self
         self.__class__.save_to_file()
 

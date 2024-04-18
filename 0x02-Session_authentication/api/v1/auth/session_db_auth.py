@@ -32,15 +32,12 @@ class SessionDBAuth(SessionExpAuth):
         session = None
 
         try:
-            UserSession.load_from_file()
             session = UserSession.search({"session_id": session_id})[0]
         except (Exception):
             pass
 
         if session is None:
             return None
-
-        print(session)
 
         if self.session_duration == 0:
             return session.get("user_id")
@@ -52,7 +49,7 @@ class SessionDBAuth(SessionExpAuth):
             return None
 
         if (created_at + timedelta(seconds=self.session_duration)
-                < datetime.now()):
+                < datetime.utcnow()):
             return None
 
         return user_id
