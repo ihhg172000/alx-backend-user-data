@@ -16,6 +16,9 @@ class SessionDBAuth(SessionExpAuth):
         """
         create_session
         """
+        if user_id is None:
+            return None
+
         session_id = str(uuid4())
         session = UserSession(user_id=user_id, session_id=session_id)
         session.save()
