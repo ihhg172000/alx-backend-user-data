@@ -2,6 +2,7 @@
 """DB module
 """
 from sqlalchemy import create_engine
+from sqlalchemy.exc import InvalidRequestError, NoResultFound
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -35,10 +36,26 @@ class DB:
         """
         user = User(email=email, hashed_password=hashed_password)
 
-        try:
-            self._session.add(user)
-            self._session.commit()
-        except (Exception):
-            self._session.rollback()
+        self._session.add(user)
+        self._session.commit()
 
         return User
+
+    def find_user_by(self, **kwargs) -> User:
+        """Find user by arbitrary keyword arguments
+        """
+        if not kwargs:
+            raise InvalidRequestError
+
+        columns = User.__table__.columns.keys()
+
+        for key in kwargs.keys():
+            if key not in columns:
+                raise InvalidRequestError
+
+        user = self._session.query(User).filter_by(**kwargs).first()
+
+        if not user:
+            raise NoResultFound
+
+        return user
